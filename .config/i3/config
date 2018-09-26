@@ -11,6 +11,9 @@
 
 set $mod Mod4
 
+# load compton
+exec_always /usr/bin/compton --config ~/.config/compton/config
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 #font pango:monospace 11
@@ -30,7 +33,8 @@ font pango:DejaVu Sans Mono 13
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec terminator
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -151,44 +155,49 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-        status_command i3status
-	#status_command /home/andre/.scripts/i3statusbar_custom.sh
-}
+#bar {
+#        status_command i3status
+#	#status_command /home/andre/.scripts/i3statusbar_custom.sh
+#}
 
-## MY Own Controls
 
-# Pulse Audio controls
-#increase sound
-# # set $sink `pactl list short sinks | grep RUNNING | cut -f1`
-# # bindsym FX86AudioRaiseVolume exec pactl set-sink-volume 0 +5%
-# bindsym 114 exec pactl set-sink-volume alsa_output.pci-0000_01_00.1.hdmi-surround-extra1 -- +5%# && killall -SIGUSR1 i3status
-# #decrease sound
-# # bindsym FX86AudioLowerVolume exec pactl set-sink-volume 0 -5%
-# bindsym 115 exec pactl set-sink-volume alsa_output.pci-0000_01_00.1.hdmi-surround-extra1 -- -5%# && killall -SIGUSR1 i3status
-# #mute sound
-# # bindsym FX86AudioMute exec --no-startup-id pactl set-sink-mute alsa_output.pci-0000_01_00.1.hdmi-surround-extra1 toggle
-# bindsym 113 exec pactl set-sink-mute alsa_output.pci-0000_01_00.1.hdmi-surround-extra1 toggle
 
+##########
+# CONTORLS
+##########
+# Volume bindings
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -2%
 bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle
-
-
-# Media player keys
-#play
+# Media player keys (needs playerctl installed)
 bindsym XF86AudioPlay exec playerctl play-pause
-#pause
 bindsym XF86AudioPause exec playerctl play-pause
-#next
 bindsym XF86AudioNext exec playerctl next
-#prev
 bindsym XF86AudioPrev exec playerctl previous
+# Workspace controls
+bindsym $mod+Shift+Mod1+Right move workspace to output right
+bindsym $mod+Shift+Mod1+Left move workspace to output left
+# create an empty window
+bindsym $mod+BackSpace exec i3-msg open
 
-
-# spotify
-# bindsym XF86AudioNext exec ~/.scripts/spotify-control/spotify-control Next
-# bindsym XF86AudioPrev exec ~/.scripts/spotify-control/spotify-control Previous
-# bindsym XF86AudioPlay exec ~/.scripts/spotify-control/spotify-control PlayPause
-
+##########
+# TOOLS ##
+##########
+# polybar
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+# nitrogen = wallpaper tool -> restore the configured wallpaper
 exec --no-startup-id nitrogen --restore
+# load keyboard colors
+exec --no-startup-id /usr/bin/g910-led -p /etc/g810-led/profile
+# enable numlock on startup
+exec_always --no-startup-id /usr/bin/numlockx on
+
+
+###########
+# GAPS CONF
+###########
+gaps inner 10
+gaps outer 0
+smart_gaps on
+# remove title
+new_window pixel 0
